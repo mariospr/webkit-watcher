@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/browsebuilder"
+      android:title="@string/browse_builder" />
+<item android:id="@+id/browselastbuild"
+      android:title="@string/browse_last_build" />
+<item android:id="@+id/browserevision"
+      android:title="@string/browse_revision" />
+<item android:id="@+id/browsecoreconsole"
+      android:title="@string/browse_core_console" />
+<item android:id="@+id/browsecorewaterfall"
+      android:title="@string/browse_core_waterfall" />
+</menu>

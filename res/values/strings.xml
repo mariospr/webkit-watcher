@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WebKit Watcher</string>
+    <string name="refresh">Refresh</string>
+
+    <string name="refreshing_title">Refreshing list</string>
+    <string name="refreshing_message">Retrieving information...</string>
+
+    <string name="browse_builder">Details about the builder</string>
+    <string name="browse_last_build">Details about the last build</string>
+    <string name="browse_revision">SVN commit for the last build</string>
+    <string name="browse_core_console">Browse Core Console</string>
+    <string name="browse_core_waterfall">Browse Core Waterfall</string>
+    <string name="app_description">WebKit Watcher is a simple application to easily monitorize the status of the WebKit buildbots from your Android phone. It currently supports monitoring the core bots only. It\'s GPL licensed and freely available for its use (no ads either).</string>
+
+    <string name="error_no_network">ERROR: No network connection available</string>
+    <string name="error_no_valid_builders_found">WebKit builders not found</string>
+    <string name="error_unknown_svn_revision">Unknown SVN revision</string>
+</resources>

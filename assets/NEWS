@@ -1,0 +1,6 @@
+0.1 (05 Dec 2010)
+
+  * Initial version.
+  * Check status of the last build for the core buildbots only.
+  * Check extra details through the web browser.
+  * Based on regexp parsing of the source HTML.

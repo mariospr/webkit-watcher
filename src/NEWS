@@ -1,6 +1,9 @@
 0.1.1 (?)
 
   * Fixed bug retrieving data with slow connections.
+  * Got a new logo (actually the same but simplified).
+  * Removed hardcoded list of builders.
+  * Minor bugs fixed.
 
 0.1 (05 Dec 2010)
 

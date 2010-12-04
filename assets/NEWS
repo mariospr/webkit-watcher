@@ -1,3 +1,7 @@
+0.1.1 (?)
+
+  * Fixed bug retrieving data with slow connections.
+
 0.1 (05 Dec 2010)
 
   * Initial version.

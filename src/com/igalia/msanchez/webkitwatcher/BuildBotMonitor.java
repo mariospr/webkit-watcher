@@ -25,6 +25,7 @@ package com.igalia.msanchez.webkitwatcher;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -139,7 +140,14 @@ public class BuildBotMonitor implements Runnable {
                         // Read the HTML
                         String htmlContent = "";
                         URL url = new URL(this.url + "/builders");
-                        InputStream is = url.openStream();
+                        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                        connection.setDoInput(true);
+                        connection.setDoOutput(true);
+                        connection.setUseCaches(false);
+                        connection.setRequestMethod("GET");
+                        connection.setConnectTimeout(15000);
+                        connection.setReadTimeout(20000);
+                        InputStream is = connection.getInputStream();
                         InputStreamReader isr = new InputStreamReader(is);
                         BufferedReader reader = new BufferedReader(isr);
                         String line = reader.readLine();
@@ -150,6 +158,7 @@ public class BuildBotMonitor implements Runnable {
                         reader.close();
                         isr.close();
                         is.close();
+                        connection.disconnect();
 
                         // Process it
 

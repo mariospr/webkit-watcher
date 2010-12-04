@@ -16,4 +16,15 @@
     <string name="error_no_network">ERROR: No network connection available</string>
     <string name="error_no_valid_builders_found">WebKit builders not found</string>
     <string name="error_unknown_svn_revision">Unknown SVN revision</string>
+    
+    <string-array name="core_buildbots_regexps">
+        <item>SnowLeopard.*Intel.*Release.*</item>
+        <item>Leopard.*Intel.*</item>
+        <item>Windows.*Build.*</item>
+        <item>GTK.*32.*</item>
+        <item>GTK.*64.*Debug</item>
+        <item>Qt.*Linux.*</item>
+        <item>Qt.*Windows.*</item>
+        <item>Chromium.*Release$</item>
+    </string-array>
 </resources>

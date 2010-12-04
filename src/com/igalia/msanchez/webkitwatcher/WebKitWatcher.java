@@ -22,9 +22,8 @@
 
 package com.igalia.msanchez.webkitwatcher;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -46,138 +45,132 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class WebKitWatcher extends ListActivity {
 
-        private BuildBotMonitor buildbot;
-        private ListView listView;
+    private BuildBotMonitor buildbot;
+    private ListView listView;
 
-        public WebKitWatcher() {
-                super();
-                this.buildbot = null;
-                this.listView = null;
-        }
+    public WebKitWatcher() {
+	super();
+	this.buildbot = null;
+	this.listView = null;
+    }
 
-        /** Called when the activity is first created. */
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-                super.onCreate(savedInstanceState);
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
 
-                this.buildbot = new BuildBotMonitor(this);
-                this.listView = getListView();
-                this.listView.setTextFilterEnabled(true);
-                this.listView.setOnItemClickListener(new OnItemClickListener() {
-                        public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
-                                // When clicked, show a toast with the TextView text
-                                Builder builder = (Builder) parent.getAdapter().getItem(position);
-                                Toast.makeText(getApplicationContext(),
-                                                "Last build number: " + builder.getBuildNumber() + "\n"
-                                                + "SVN revision: " + builder.getRevisionAsString() + "\n"
-                                                + builder.getSummary(),
-                                                Toast.LENGTH_LONG).show();
-                        }
-                });
-                registerForContextMenu(this.listView);
-                this.buildbot.refreshState();
-        }
+	this.buildbot = new BuildBotMonitor(this);
+	this.listView = getListView();
+	this.listView.setTextFilterEnabled(true);
+	this.listView.setOnItemClickListener(new OnItemClickListener() {
+	    public void onItemClick(AdapterView<?> parent, View view,
+		    int position, long id) {
+		// When clicked, show a toast with the TextView text
+		Builder builder = (Builder) parent.getAdapter().getItem(position);
+		Toast.makeText(getApplicationContext(),
+			"Last build number: " + builder.getBuildNumber() + "\n"
+			+ "SVN revision: " + builder.getRevisionAsString() + "\n"
+			+ builder.getSummary(),
+			Toast.LENGTH_LONG).show();
+	    }
+	});
+	registerForContextMenu(this.listView);
+	this.buildbot.refreshState();
+    }
 
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-                MenuInflater inflater = getMenuInflater();
-                inflater.inflate(R.menu.main_menu, menu);
-                return true;
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+	MenuInflater inflater = getMenuInflater();
+	inflater.inflate(R.menu.main_menu, menu);
+	return true;
+    }
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-                // Handle item selection
-                switch (item.getItemId()) {
-                case R.id.refresh:
-                        this.buildbot.refreshState();
-                        return true;
-                default:
-                        return super.onOptionsItemSelected(item);
-                }
-        }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+	// Handle item selection
+	switch (item.getItemId()) {
+	case R.id.refresh:
+	    this.buildbot.refreshState();
+	    return true;
+	default:
+	    return super.onOptionsItemSelected(item);
+	}
+    }
 
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v,
-                        ContextMenuInfo menuInfo) {
-                super.onCreateContextMenu(menu, v, menuInfo);
-                MenuInflater inflater = getMenuInflater();
-                inflater.inflate(R.menu.context_menu, menu);
-        }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+	    ContextMenuInfo menuInfo) {
+	super.onCreateContextMenu(menu, v, menuInfo);
+	MenuInflater inflater = getMenuInflater();
+	inflater.inflate(R.menu.context_menu, menu);
+    }
 
-        @Override
-        public boolean onContextItemSelected(MenuItem item) {
-                AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-                ListAdapter adapter = listView.getAdapter();
-                Builder builder = (Builder) adapter.getItem((int)info.id);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                String url = null;
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	ListAdapter adapter = listView.getAdapter();
+	Builder builder = (Builder) adapter.getItem((int)info.id);
+	Intent intent = new Intent(Intent.ACTION_VIEW);
+	String url = null;
 
-                switch (item.getItemId()) {
-                case R.id.browsebuilder:
-                        url = this.buildbot.getURL() + "/" + builder.getPath();
-                        intent.setData(Uri.parse(url));
-                        startActivity(intent);
-                        return true;
-                case R.id.browselastbuild:
-                        url = this.buildbot.getURL() + "/" + builder.getPath() + "/builds/" + builder.getBuildNumber();
-                        intent.setData(Uri.parse(url));
-                        startActivity(intent);
-                        return true;
-                case R.id.browserevision:
-                        int revision = builder.getRevision();
-                        if (revision != -1) {
-                                url = "http://trac.webkit.org/changeset/" + builder.getRevision();
-                                intent.setData(Uri.parse(url));
-                                startActivity(intent);
-                        } else {
-                                Toast.makeText(getApplicationContext(),
-                                                this.getString(R.string.error_unknown_svn_revision),
-                                                Toast.LENGTH_LONG).show();
-                        }
-                        return true;
-                case R.id.browsecoreconsole:
-                        url = this.buildbot.getURL() + "/console?category=core";
-                        intent.setData(Uri.parse(url));
-                        startActivity(intent);
-                        return true;
-                case R.id.browsecorewaterfall:
-                        url = this.buildbot.getURL() + "/waterfall?category=core";
-                        intent.setData(Uri.parse(url));
-                        startActivity(intent);
-                        return true;
-                default:
-                        return super.onOptionsItemSelected(item);
-                }
-        }
+	switch (item.getItemId()) {
+	case R.id.browsebuilder:
+	    url = this.buildbot.getURL() + "/" + builder.getPath();
+	    intent.setData(Uri.parse(url));
+	    startActivity(intent);
+	    return true;
+	case R.id.browselastbuild:
+	    url = this.buildbot.getURL() + "/" + builder.getPath() + "/builds/" + builder.getBuildNumber();
+	    intent.setData(Uri.parse(url));
+	    startActivity(intent);
+	    return true;
+	case R.id.browserevision:
+	    int revision = builder.getRevision();
+	    if (revision != -1) {
+		url = "http://trac.webkit.org/changeset/" + builder.getRevision();
+		intent.setData(Uri.parse(url));
+		startActivity(intent);
+	    } else {
+		Toast.makeText(getApplicationContext(),
+			this.getString(R.string.error_unknown_svn_revision),
+			Toast.LENGTH_LONG).show();
+	    }
+	    return true;
+	case R.id.browsecoreconsole:
+	    url = this.buildbot.getURL() + "/console?category=core";
+	    intent.setData(Uri.parse(url));
+	    startActivity(intent);
+	    return true;
+	case R.id.browsecorewaterfall:
+	    url = this.buildbot.getURL() + "/waterfall?category=core";
+	    intent.setData(Uri.parse(url));
+	    startActivity(intent);
+	    return true;
+	default:
+	    return super.onOptionsItemSelected(item);
+	}
+    }
 
-        public void updateView () {
+    public void updateView () {
 
-                // Get a list of valid builders first
-                List<Builder> validBuilders = new ArrayList<Builder>();
-                for (Builder builder : buildbot.getBuilders().values()) {
-                        if (builder.getName() != null) {
-                                validBuilders.add(builder);
-                        }
-                }
+	// Get a list of valid builders first
+	Collection<Builder> validBuilders = buildbot.getBuilders().values();
+	if (validBuilders.isEmpty()) {
+	    // Show error message if no valid builder was found
+	    Toast.makeText(getApplicationContext(),
+		    this.getString(R.string.error_no_valid_builders_found),
+		    Toast.LENGTH_LONG).show();
+	}
 
-                // Show error message if no valid builder was found
-                if (validBuilders.isEmpty()) {
-                        Toast.makeText(getApplicationContext(),
-                                        this.getString(R.string.error_no_valid_builders_found),
-                                        Toast.LENGTH_LONG).show();
-                }
-
-                // Build the adapter and use it in the list view
-                ArrayAdapter<Builder> adapter = new BuilderAdapter(this, R.layout.builder_listitem, validBuilders.toArray(new Builder[0]));
-                Comparator<Builder> comparator = new Comparator<Builder>() {
-                        @Override
-                        public int compare(Builder b1, Builder b2) {
-                                return b1.getName().compareToIgnoreCase(b2.getName());
-                        }
-                };
-                adapter.sort(comparator);
-                setListAdapter(adapter);
-        }
+	// Build the adapter and use it in the list view
+	ArrayAdapter<Builder> adapter = new BuilderAdapter(this, R.layout.builder_listitem, validBuilders.toArray(new Builder[0]));
+	Comparator<Builder> comparator = new Comparator<Builder>() {
+	    @Override
+	    public int compare(Builder b1, Builder b2) {
+		return b1.getName().compareToIgnoreCase(b2.getName());
+	    }
+	};
+	adapter.sort(comparator);
+	setListAdapter(adapter);
+    }
 }

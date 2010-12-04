@@ -32,51 +32,51 @@ import android.widget.TextView;
 
 public class BuilderAdapter extends ArrayAdapter<Builder> {
 
-        private Builder[] items;
+    private Builder[] items;
 
-        public BuilderAdapter(Context context, int textViewResourceId, Builder[] items) {
-                super(context, textViewResourceId, items);
-                this.items = items;
-        }
+    public BuilderAdapter(Context context, int textViewResourceId, Builder[] items) {
+	super(context, textViewResourceId, items);
+	this.items = items;
+    }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-                View v = convertView;
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+	View v = convertView;
 
-                if (v == null) {
-                        LayoutInflater vi = (LayoutInflater) getContext().getSystemService(
-                                        Context.LAYOUT_INFLATER_SERVICE);
-                        v = vi.inflate(R.layout.builder_listitem, null);
-                }
+	if (v == null) {
+	    LayoutInflater vi = (LayoutInflater) getContext().getSystemService(
+		    Context.LAYOUT_INFLATER_SERVICE);
+	    v = vi.inflate(R.layout.builder_listitem, null);
+	}
 
-                Builder builder = items[position];
-                if (builder!= null) {
-                        TextView tv = (TextView) v.findViewById(R.id.builderitem);
-                        if (tv != null) {
-                                tv.setText(builder.getName());
-                                int color;
-                                switch (builder.getBuildResult()) {
-                                case PASSED:
-                                        color = Color.GREEN;
-                                        break;
-                                case FAILED:
-                                        color = Color.RED;
-                                        break;
-                                case FAILED_AGAIN:
-                                        color = Color.rgb(255, 128, 0); // ORANGE
-                                        break;
-                                case RUNNING:
-                                        color = Color.YELLOW;
-                                        break;
-                                case NO_DATA:
-                                        color = Color.WHITE;
-                                        break;
-                                default:
-                                        color = Color.GRAY;
-                                }
-                                tv.setTextColor(color);
-                        }
-                }
-                return v;
-        }
+	Builder builder = items[position];
+	if (builder!= null) {
+	    TextView tv = (TextView) v.findViewById(R.id.builderitem);
+	    if (tv != null) {
+		tv.setText(builder.getName());
+		int color;
+		switch (builder.getBuildResult()) {
+		case PASSED:
+		    color = Color.GREEN;
+		    break;
+		case FAILED:
+		    color = Color.RED;
+		    break;
+		case FAILED_AGAIN:
+		    color = Color.rgb(255, 128, 0); // ORANGE
+		    break;
+		case RUNNING:
+		    color = Color.YELLOW;
+		    break;
+		case NO_DATA:
+		    color = Color.WHITE;
+		    break;
+		default:
+		    color = Color.GRAY;
+		}
+		tv.setTextColor(color);
+	    }
+	}
+	return v;
+    }
 }

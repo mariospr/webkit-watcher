@@ -44,198 +44,186 @@ import com.igalia.msanchez.webkitwatcher.Builder.BuildResult;
 
 public class BuildBotMonitor implements Runnable {
 
-        private static final int N_BUILDERS = 21;
+    private WebKitWatcher watcher;
+    private String url;
+    private String[] supportedRegexps;
+    private Map<String, Builder> builders;
+    private ProgressDialog progressDialog;
 
-        private WebKitWatcher watcher;
-        private String url;
-        private Map<String, Builder> builders;
-        private ProgressDialog progressDialog;
+    public BuildBotMonitor (WebKitWatcher watcher) {
+	this.watcher = watcher;
+	this.url = "http://build.webkit.org";
+	this.builders = null;
 
-        private void initializeBuilders() {
-                this.builders = new HashMap<String, Builder>(N_BUILDERS);
+	// Initialize the list of supported builders
+	this.supportedRegexps = this.watcher.getResources().getStringArray(R.array.core_buildbots_regexps);
 
-                // FIXME It would be nice not to have this hard-coded
-                Builder builder;
-                builder = new Builder("builders/Leopard%20Intel%20Release%20%28Build%29");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Leopard%20Intel%20Release%20%28Tests%29");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Leopard%20Intel%20Debug%20%28Build%29");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Leopard%20Intel%20Debug%20%28Tests%29");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/SnowLeopard%20Intel%20Release%20%28Build%29");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/SnowLeopard%20Intel%20Release%20%28Tests%29");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Windows%20Release%20%28Build%29");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Windows%20Debug%20%28Build%29");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/GTK%20Linux%2032-bit%20Release");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/GTK%20Linux%2032-bit%20Debug");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/GTK%20Linux%2064-bit%20Debug");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Qt%20Linux%20Release");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Qt%20Linux%20Release%20minimal");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Qt%20Linux%20ARMv5%20Release");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Qt%20Linux%20ARMv7%20Release");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Qt%20Windows%2032-bit%20Release");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Qt%20Windows%2032-bit%20Debug");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Chromium%20Win%20Release");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Chromium%20Mac%20Release");
-                builders.put(builder.getPath(), builder);
-                builder = new Builder("builders/Chromium%20Linux%20Release");
-                builders.put(builder.getPath(), builder);
-        }
+	// Initialize hash table for the actual builders
+	this.builders = new HashMap<String, Builder>(this.supportedRegexps.length);
+	this.progressDialog = null;
+    }
 
-        public BuildBotMonitor (WebKitWatcher watcher) {
-                this.watcher = watcher;
-                this.url = "http://build.webkit.org";
-                this.progressDialog = null;
-                initializeBuilders();
-        }
+    public String getURL() {
+	return this.url;
+    }
 
-        public String getURL() {
-                return this.url;
-        }
+    public Map<String, Builder> getBuilders() {
+	return this.builders;
+    }
 
-        public Map<String, Builder> getBuilders() {
-                return this.builders;
-        }
+    public void refreshState() {
+	// First check whether there's a valid network connection
+	ConnectivityManager connMan = (ConnectivityManager) this.watcher.getSystemService(Context.CONNECTIVITY_SERVICE);
+	NetworkInfo networkInfo = connMan.getActiveNetworkInfo();
 
-        public void refreshState() {
-                // First check whether there's a valid network connection
-                ConnectivityManager connMan = (ConnectivityManager) this.watcher.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = connMan.getActiveNetworkInfo();
+	// Check network connection before doing anything
+	if (networkInfo != null && networkInfo.isConnected()) {
+	    this.progressDialog = ProgressDialog.show(this.watcher,
+		    this.watcher.getString(R.string.refreshing_title),
+		    this.watcher.getString(R.string.refreshing_message),
+		    true, true);
 
-                // Check network connection before doing anything
-                if (networkInfo != null && networkInfo.isConnected()) {
-                        this.progressDialog = ProgressDialog.show(this.watcher,
-                                        this.watcher.getString(R.string.refreshing_title),
-                                        this.watcher.getString(R.string.refreshing_message),
-                                        true, true);
+	    Thread thread = new Thread(this);
+	    thread.start();
+	} else {
+	    Toast.makeText(this.watcher.getApplicationContext(),
+		    this.watcher.getString(R.string.error_no_network),
+		    Toast.LENGTH_SHORT).show();
+	}
+    }
 
-                        Thread thread = new Thread(this);
-                        thread.start();
-                } else {
-                        Toast.makeText(this.watcher.getApplicationContext(),
-                                        this.watcher.getString(R.string.error_no_network),
-                                        Toast.LENGTH_SHORT).show();
-                }
-        }
+    @Override
+    public void run() {
+	try {
+	    // Read the HTML
+	    String htmlContent = this.retrieveHTML();
 
-        @Override
-        public void run() {
-                try {
-                        // Read the HTML
-                        String htmlContent = "";
-                        URL url = new URL(this.url + "/builders");
-                        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                        connection.setDoInput(true);
-                        connection.setDoOutput(true);
-                        connection.setUseCaches(false);
-                        connection.setRequestMethod("GET");
-                        connection.setConnectTimeout(15000);
-                        connection.setReadTimeout(20000);
-                        InputStream is = connection.getInputStream();
-                        InputStreamReader isr = new InputStreamReader(is);
-                        BufferedReader reader = new BufferedReader(isr);
-                        String line = reader.readLine();
-                        while (line != null) {
-                                htmlContent += line;
-                                line = reader.readLine();
-                        }
-                        reader.close();
-                        isr.close();
-                        is.close();
-                        connection.disconnect();
+	    // Process it
 
-                        // Process it
+	    Pattern rootPattern = Pattern.compile("<?.tr>");
+	    Pattern builderPattern = Pattern.compile(".*<td.*>.*<a href=.*>.*</a>.*</td>.*<td.*>.*<a href=.*>.*</a>.*<br/>.*</td>.*<td.*>.*</td>.*", Pattern.DOTALL);
+	    Pattern builderCellPattern = Pattern.compile("</td>");
+	    String[] buildersList = rootPattern.split(htmlContent);
+	    String builderString = null;
+	    Builder currentBuilder = null;
+	    int so, eo;
 
-                        Pattern rootPattern = Pattern.compile("<?.tr>");
-                        Pattern builderPattern = Pattern.compile(".*<td.*>.*<a href=.*>.*</a>.*</td>.*<td.*>.*<a href=.*>.*</a>.*<br/>.*</td>.*<td.*>.*</td>.*", Pattern.DOTALL);
-                        Pattern builderCellPattern = Pattern.compile("</td>");
-                        String[] buildersList = rootPattern.split(htmlContent);
-                        String builderString = null;
-                        Builder currentBuilder = null;
-                        int so, eo;
+	    // For each builder, update its information in the map
+	    for (String s : buildersList) {
 
-                        // For each builder, update its information in the map
-                        for (String s : buildersList) {
+		// Sanity check
+		Matcher m = builderPattern.matcher(s);
+		if (!m.matches())
+		    continue;
 
-                                // Sanity check
-                                Matcher m = builderPattern.matcher(s);
-                                if (!m.matches())
-                                        continue;
+		String[] builderCellsList = builderCellPattern.split(s);
 
-                                String[] builderCellsList = builderCellPattern.split(s);
+		// Name
+		builderString = builderCellsList[0];
+		so = builderString.lastIndexOf("\">") + "\">".length();
+		eo = builderString.indexOf("</a>");
+		String name = builderString.substring(so, eo);
 
-                                // Identify builder
-                                builderString = builderCellsList[0];
-                                so = builderString.indexOf("<a href=\"") + "<a href=\"".length();
-                                eo = builderString.lastIndexOf("\">");
-                                currentBuilder = builders.get(builderString.substring(so, eo));
+		if (!this.isBuildBotSupported(name))
+		    continue;
 
-                                // Builder found. Fill remaining data
-                                if (currentBuilder != null) {
+		// Create new builder and add it to the hash table
+		currentBuilder = new Builder(name);
+		this.builders.put(name, currentBuilder);
 
-                                        // Name
-                                        so = builderString.lastIndexOf("\">") + "\">".length();
-                                        eo = builderString.indexOf("</a>");
-                                        currentBuilder.setName(builderString.substring(so, eo));
+		// Builder path
+		so = builderString.indexOf("<a href=\"") + "<a href=\"".length();
+		eo = builderString.lastIndexOf("\">");
+		currentBuilder.setPath(builderString.substring(so, eo));
 
-                                        // Build result
-                                        builderString = builderCellsList[1];
-                                        if (builderString.contains("success"))
-                                                currentBuilder.setBuildResult(BuildResult.PASSED);
-                                        else
-                                                currentBuilder.setBuildResult(BuildResult.FAILED);
+		// Build result
+		builderString = builderCellsList[1];
+		if (builderString.contains("success"))
+		    currentBuilder.setBuildResult(BuildResult.PASSED);
+		else
+		    currentBuilder.setBuildResult(BuildResult.FAILED);
 
-                                        // Build number
-                                        so = builderString.indexOf("<a href=\"") + "<a href=\"".length();
-                                        eo = builderString.lastIndexOf("\">");
-                                        String buildPath = builderString.substring(so, eo);
-                                        String buildNumber = buildPath.substring(buildPath.lastIndexOf("/") + 1);
-                                        currentBuilder.setBuildNumber(buildNumber);
+		// Build number
+		so = builderString.indexOf("<a href=\"") + "<a href=\"".length();
+		eo = builderString.lastIndexOf("\">");
+		String buildPath = builderString.substring(so, eo);
+		String buildNumber = buildPath.substring(buildPath.lastIndexOf("/") + 1);
+		currentBuilder.setBuildNumber(buildNumber);
 
-                                        // SVN revision number
-                                        so = eo + "\">".length();
-                                        eo = builderString.indexOf("</a>");
-                                        currentBuilder.setRevisionFromString(builderString.substring(so, eo));
+		// SVN revision number
+		so = eo + "\">".length();
+		eo = builderString.indexOf("</a>");
+		currentBuilder.setRevisionFromString(builderString.substring(so, eo));
 
-                                        // Summary
-                                        so = builderString.indexOf("<br/>") + "<br/>".length();
-                                        currentBuilder.setSummary(builderString.substring(so));
+		// Summary
+		so = builderString.indexOf("<br/>") + "<br/>".length();
+		currentBuilder.setSummary(builderString.substring(so));
 
-                                        // Current status
-                                        builderString = builderCellsList[2];
-                                        so = builderString.indexOf("\">") + "\">".length();
-                                        currentBuilder.setStatus(builderString.substring(so));
-                                }
-                        }
-                } catch (Exception e) {
-                        Toast.makeText(this.watcher.getApplicationContext(),
-                                        "An error has occurred: " + e, Toast.LENGTH_SHORT).show();
-                }
+		// Current status
+		builderString = builderCellsList[2];
+		so = builderString.indexOf("\">") + "\">".length();
+		currentBuilder.setStatus(builderString.substring(so));
+	    }
+	} catch (Exception e) {
+	    Toast.makeText(this.watcher.getApplicationContext(),
+		    "An error has occurred: " + e, Toast.LENGTH_SHORT).show();
+	}
 
-                handler.sendEmptyMessage(0);
-        }
+	handler.sendEmptyMessage(0);
+    }
 
-        private Handler handler = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                        progressDialog.dismiss();
-                        watcher.updateView();
-                }
-        };
+    private String retrieveHTML() throws Exception {
+	String result = "";
+	try {
+	    URL url = new URL(this.url + "/builders");
+	    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+	    connection.setDoInput(true);
+	    connection.setDoOutput(true);
+	    connection.setUseCaches(false);
+	    connection.setRequestMethod("GET");
+	    connection.setConnectTimeout(15000);
+	    connection.setReadTimeout(20000);
+
+	    InputStream is = connection.getInputStream();
+	    InputStreamReader isr = new InputStreamReader(is);
+	    BufferedReader reader = new BufferedReader(isr);
+
+	    String line = reader.readLine();
+	    while (line != null) {
+		result += line;
+		line = reader.readLine();
+	    }
+
+	    reader.close();
+	    isr.close();
+	    is.close();
+	    connection.disconnect();
+	} catch (Exception e) {
+	    throw e;
+	}
+
+	return result;
+    }
+
+    private boolean isBuildBotSupported(String name) {
+
+	// WebKit2 builders are not core buildbots yet
+	if (name.contains("WebKit2"))
+	    return false;
+
+	// Check the name against the supported regular expressions
+	for (String s : this.supportedRegexps) {
+	    if (Pattern.matches(s, name))
+		return true;
+	}
+	return false;
+    }
+
+    private Handler handler = new Handler() {
+	@Override
+	public void handleMessage(Message msg) {
+	    progressDialog.dismiss();
+	    watcher.updateView();
+	}
+    };
 }

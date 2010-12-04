@@ -24,99 +24,99 @@ package com.igalia.msanchez.webkitwatcher;
 
 public class Builder {
 
-        public enum BuildResult {
-                UNKNOWN,      // GRAY
-                PASSED,       // GREEN
-                FAILED,       // RED
-                FAILED_AGAIN, // ORANGE
-                RUNNING,      // YELLOW
-                NO_DATA       // WHITE
-        };
+    public enum BuildResult {
+	UNKNOWN,      // GRAY
+	PASSED,       // GREEN
+	FAILED,       // RED
+	FAILED_AGAIN, // ORANGE
+	RUNNING,      // YELLOW
+	NO_DATA       // WHITE
+    };
 
-        private String path;
-        private String name;
-        private BuildResult buildResult;
-        private int revision;
-        private String buildNumber;
-        private String summary;
-        private String status;
+    private String name;
+    private String path;
+    private BuildResult buildResult;
+    private int revision;
+    private String buildNumber;
+    private String summary;
+    private String status;
 
-        public Builder(String path) {
-                this.path = path;
-                this.name = null;
-                this.buildResult = BuildResult.UNKNOWN;
-                this.revision = -1;
-                this.summary = null;
-        }
+    public Builder(String name) {
+	this.name = name;
+	this.path = null;
+	this.buildResult = BuildResult.UNKNOWN;
+	this.revision = -1;
+	this.summary = null;
+    }
 
-        public String getPath() {
-                return path;
-        }
+    public String getName() {
+	return name;
+    }
 
-        public String getName() {
-                return name;
-        }
+    public String getPath() {
+	return path;
+    }
 
-        public void setName(String name) {
-                this.name = name;
-        }
+    public void setPath(String path) {
+	this.path= path;
+    }
 
-        public BuildResult getBuildResult() {
-                return buildResult;
-        }
+    public BuildResult getBuildResult() {
+	return buildResult;
+    }
 
-        public void setBuildResult(BuildResult buildResult) {
-                this.buildResult = buildResult;
-        }
+    public void setBuildResult(BuildResult buildResult) {
+	this.buildResult = buildResult;
+    }
 
-        public int getRevision() {
-                return revision;
-        }
+    public int getRevision() {
+	return revision;
+    }
 
-        public void setRevision(int revision) {
-                this.revision = revision;
-        }
+    public void setRevision(int revision) {
+	this.revision = revision;
+    }
 
-        public String getRevisionAsString() {
-                if (this.revision == -1)
-                        return new String("Unknown");
+    public String getRevisionAsString() {
+	if (this.revision == -1)
+	    return new String("Unknown");
 
-                return Integer.toString(this.revision);
-        }
+	return Integer.toString(this.revision);
+    }
 
-        public void setRevisionFromString(String revision) {
-                try {
-                        this.revision = Integer.parseInt(revision);
-                } catch (NumberFormatException e) {
-                        this.revision = -1;
-                }
-        }
+    public void setRevisionFromString(String revision) {
+	try {
+	    this.revision = Integer.parseInt(revision);
+	} catch (NumberFormatException e) {
+	    this.revision = -1;
+	}
+    }
 
-        public String getBuildNumber() {
-                return buildNumber;
-        }
+    public String getBuildNumber() {
+	return buildNumber;
+    }
 
-        public void setBuildNumber(String buildNumber) {
-                this.buildNumber = buildNumber;
-        }
+    public void setBuildNumber(String buildNumber) {
+	this.buildNumber = buildNumber;
+    }
 
-        public String getSummary() {
-                return summary;
-        }
+    public String getSummary() {
+	return summary;
+    }
 
-        public void setSummary(String summary) {
-                this.summary = summary;
-        }
+    public void setSummary(String summary) {
+	this.summary = summary;
+    }
 
-        public String getStatus() {
-                return status;
-        }
+    public String getStatus() {
+	return status;
+    }
 
-        public void setStatus(String status) {
-                this.status = status;
-        }
+    public void setStatus(String status) {
+	this.status = status;
+    }
 
-        public String toString() {
-                return this.getName();
-        }
+    public String toString() {
+	return this.getName();
+    }
 }

@@ -59,7 +59,7 @@ public class BuildBotMonitor implements Runnable {
 	this.supportedRegexps = this.watcher.getResources().getStringArray(R.array.core_buildbots_regexps);
 
 	// Initialize hash table for the actual builders
-	this.builders = new HashMap<String, Builder>(this.supportedRegexps.length);
+	this.builders = new HashMap<String, Builder>();
 	this.progressDialog = null;
     }
 

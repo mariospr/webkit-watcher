@@ -153,16 +153,8 @@ public class WebKitWatcher extends ListActivity {
 
     public void updateView () {
 
-	// Get a list of valid builders first
-	Collection<Builder> validBuilders = buildbot.getBuilders().values();
-	if (validBuilders.isEmpty()) {
-	    // Show error message if no valid builder was found
-	    Toast.makeText(getApplicationContext(),
-		    this.getString(R.string.error_no_valid_builders_found),
-		    Toast.LENGTH_LONG).show();
-	}
-
-	// Build the adapter and use it in the list view
+	// Get a list of valid builders and create the adapter
+	Collection<Builder> validBuilders = this.buildbot.getBuilders().values();
 	ArrayAdapter<Builder> adapter = new BuilderAdapter(this, R.layout.builder_listitem, validBuilders.toArray(new Builder[0]));
 	Comparator<Builder> comparator = new Comparator<Builder>() {
 	    @Override

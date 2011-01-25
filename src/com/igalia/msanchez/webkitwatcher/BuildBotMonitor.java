@@ -76,6 +76,10 @@ public class BuildBotMonitor implements Runnable {
 	ConnectivityManager connMan = (ConnectivityManager) this.watcher.getSystemService(Context.CONNECTIVITY_SERVICE);
 	NetworkInfo networkInfo = connMan.getActiveNetworkInfo();
 
+	// Ensure no previous progress dialog is being shown
+	if (this.progressDialog != null && this.progressDialog.isShowing())
+	    this.progressDialog.dismiss();
+
 	// Check network connection before doing anything
 	if (networkInfo != null && networkInfo.isConnected()) {
 	    this.progressDialog = ProgressDialog.show(this.watcher,
@@ -117,7 +121,9 @@ public class BuildBotMonitor implements Runnable {
     private Handler handler = new Handler() {
 	@Override
 	public void handleMessage(Message msg) {
-	    progressDialog.dismiss();
+	    if (progressDialog.isShowing())
+		progressDialog.dismiss();
+
 	    watcher.updateView();
 
 	    if (msg != null && msg.obj != null) {

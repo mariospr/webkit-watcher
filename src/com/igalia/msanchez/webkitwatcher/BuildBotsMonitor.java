@@ -42,21 +42,21 @@ import android.widget.Toast;
 
 import com.igalia.msanchez.webkitwatcher.Builder.BuildResult;
 
-public class BuildBotMonitor implements Runnable {
+public class BuildBotsMonitor implements Runnable {
 
-    private WebKitWatcher watcher;
+    private BuildBotsListView listView;
     private String url;
     private String[] supportedRegexps;
     private Map<String, Builder> builders;
     private ProgressDialog progressDialog;
 
-    public BuildBotMonitor (WebKitWatcher watcher) {
-	this.watcher = watcher;
+    public BuildBotsMonitor (BuildBotsListView buildBotListView, String[] regexpsList) {
+	this.listView = buildBotListView;
 	this.url = "http://build.webkit.org";
 	this.builders = null;
 
 	// Initialize the list of supported builders
-	this.supportedRegexps = this.watcher.getResources().getStringArray(R.array.core_buildbots_regexps);
+	this.supportedRegexps = regexpsList;
 
 	// Initialize hash table for the actual builders
 	this.builders = new HashMap<String, Builder>();
@@ -73,7 +73,7 @@ public class BuildBotMonitor implements Runnable {
 
     public void refreshState() {
 	// Check whether there's a valid network connection
-	ConnectivityManager connMan = (ConnectivityManager) this.watcher.getSystemService(Context.CONNECTIVITY_SERVICE);
+	ConnectivityManager connMan = (ConnectivityManager) this.listView.getSystemService(Context.CONNECTIVITY_SERVICE);
 	NetworkInfo networkInfo = connMan.getActiveNetworkInfo();
 
 	// Ensure no previous progress dialog is being shown
@@ -82,16 +82,16 @@ public class BuildBotMonitor implements Runnable {
 
 	// Check network connection before doing anything
 	if (networkInfo != null && networkInfo.isConnected()) {
-	    this.progressDialog = ProgressDialog.show(this.watcher,
-		    this.watcher.getString(R.string.refreshing_title),
-		    this.watcher.getString(R.string.refreshing_message),
+	    this.progressDialog = ProgressDialog.show(this.listView,
+		    this.listView.getString(R.string.refreshing_title),
+		    this.listView.getString(R.string.refreshing_message),
 		    true, true);
 
 	    Thread thread = new Thread(this);
 	    thread.start();
 	} else {
-	    Toast.makeText(this.watcher.getApplicationContext(),
-		    this.watcher.getString(R.string.error_no_network),
+	    Toast.makeText(this.listView.getApplicationContext(),
+		    this.listView.getString(R.string.error_no_network),
 		    Toast.LENGTH_SHORT).show();
 	}
     }
@@ -107,7 +107,7 @@ public class BuildBotMonitor implements Runnable {
 		this.processHTMLData(htmlContent);
 	    } else {
 		// No HTML found remotely
-		msg.obj = watcher.getString(R.string.error_no_html_found);
+		msg.obj = listView.getString(R.string.error_no_html_found);
 	    }
 	} catch (Exception e) {
 	    // Propagate exception's message
@@ -124,11 +124,11 @@ public class BuildBotMonitor implements Runnable {
 	    if (progressDialog.isShowing())
 		progressDialog.dismiss();
 
-	    watcher.updateView();
+	    listView.updateView();
 
 	    if (msg != null && msg.obj != null) {
-		Toast.makeText(watcher.getApplicationContext(),
-			watcher.getString(R.string.error_retrieving_data) + ":\n"
+		Toast.makeText(listView.getApplicationContext(),
+			listView.getString(R.string.error_retrieving_data) + ":\n"
 			+ (String) msg.obj,
 			Toast.LENGTH_SHORT).show();
 	    }
@@ -235,11 +235,6 @@ public class BuildBotMonitor implements Runnable {
     }
 
     private boolean isBuildBotSupported(String name) {
-
-	// WebKit2 builders are not core buildbots yet
-	if (name.contains("WebKit2"))
-	    return false;
-
 	// Check the name against the supported regular expressions
 	for (String s : this.supportedRegexps) {
 	    if (Pattern.matches(s, name))

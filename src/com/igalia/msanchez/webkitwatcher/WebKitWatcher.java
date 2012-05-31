@@ -22,147 +22,50 @@
 
 package com.igalia.msanchez.webkitwatcher;
 
-import java.util.Collection;
-import java.util.Comparator;
-
 import android.app.ListActivity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class WebKitWatcher extends ListActivity {
 
-    private BuildBotMonitor buildbot;
-    private ListView listView;
-
     public WebKitWatcher() {
 	super();
-	this.buildbot = null;
-	this.listView = null;
     }
-
-    /** Called when the activity is first created. */
+    
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-
-	this.buildbot = new BuildBotMonitor(this);
-	this.listView = getListView();
-	this.listView.setTextFilterEnabled(true);
-	this.listView.setOnItemClickListener(new OnItemClickListener() {
-	    public void onItemClick(AdapterView<?> parent, View view,
-		    int position, long id) {
-		// When clicked, show a toast with the TextView text
-		Builder builder = (Builder) parent.getAdapter().getItem(position);
-		Toast.makeText(getApplicationContext(),
-			"Last build number: " + builder.getBuildNumber() + "\n"
-			+ "SVN revision: " + builder.getRevisionAsString() + "\n"
-			+ builder.getSummary(),
-			Toast.LENGTH_LONG).show();
-	    }
-	});
-	registerForContextMenu(this.listView);
-	this.buildbot.refreshState();
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        
+        String[] options = this.getResources().getStringArray(R.array.main_view_options);
+        setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options));
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-	MenuInflater inflater = getMenuInflater();
-	inflater.inflate(R.menu.main_menu, menu);
-	return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-	// Handle item selection
-	switch (item.getItemId()) {
-	case R.id.refresh:
-	    this.buildbot.refreshState();
-	    return true;
-	default:
-	    return super.onOptionsItemSelected(item);
-	}
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-	    ContextMenuInfo menuInfo) {
-	super.onCreateContextMenu(menu, v, menuInfo);
-	MenuInflater inflater = getMenuInflater();
-	inflater.inflate(R.menu.context_menu, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	ListAdapter adapter = listView.getAdapter();
-	Builder builder = (Builder) adapter.getItem((int)info.id);
-	Intent intent = new Intent(Intent.ACTION_VIEW);
-	String url = null;
-
-	switch (item.getItemId()) {
-	case R.id.browsebuilder:
-	    url = this.buildbot.getURL() + "/" + builder.getPath();
-	    intent.setData(Uri.parse(url));
+    
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+	super.onListItemClick(l, v, position, id);
+	Object o = this.getListAdapter().getItem(position);
+	String name = o.toString();
+	
+	// Yeah, this is hackish.
+	Intent intent = null;
+	if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_mac)))
+	    intent = new Intent(WebKitWatcher.this, MacListView.class);
+	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_chromium)))
+	    intent = new Intent(WebKitWatcher.this, ChromiumListView.class);
+	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_gtk)))
+	    intent = new Intent(WebKitWatcher.this, GTKListView.class);
+	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_qt)))
+	    intent = new Intent(WebKitWatcher.this, QtListView.class);
+	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_efl)))
+	    intent = new Intent(WebKitWatcher.this, EFLListView.class);
+	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_windows)))
+	    intent = new Intent(WebKitWatcher.this, WindowsListView.class);
+	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_all)))
+	    intent = new Intent(WebKitWatcher.this, AllBotsListView.class);
+	
+	if (intent != null)
 	    startActivity(intent);
-	    return true;
-	case R.id.browselastbuild:
-	    url = this.buildbot.getURL() + "/" + builder.getPath() + "/builds/" + builder.getBuildNumber();
-	    intent.setData(Uri.parse(url));
-	    startActivity(intent);
-	    return true;
-	case R.id.browserevision:
-	    int revision = builder.getRevision();
-	    if (revision != -1) {
-		url = "http://trac.webkit.org/changeset/" + builder.getRevision();
-		intent.setData(Uri.parse(url));
-		startActivity(intent);
-	    } else {
-		Toast.makeText(getApplicationContext(),
-			this.getString(R.string.error_unknown_svn_revision),
-			Toast.LENGTH_LONG).show();
-	    }
-	    return true;
-	case R.id.browsecoreconsole:
-	    url = this.buildbot.getURL() + "/console?category=core";
-	    intent.setData(Uri.parse(url));
-	    startActivity(intent);
-	    return true;
-	case R.id.browsecorewaterfall:
-	    url = this.buildbot.getURL() + "/waterfall?category=core";
-	    intent.setData(Uri.parse(url));
-	    startActivity(intent);
-	    return true;
-	default:
-	    return super.onOptionsItemSelected(item);
-	}
-    }
-
-    public void updateView () {
-
-	// Get a list of valid builders and create the adapter
-	Collection<Builder> validBuilders = this.buildbot.getBuilders().values();
-	ArrayAdapter<Builder> adapter = new BuilderAdapter(this, R.layout.builder_listitem, validBuilders.toArray(new Builder[0]));
-	Comparator<Builder> comparator = new Comparator<Builder>() {
-	    @Override
-	    public int compare(Builder b1, Builder b2) {
-		return b1.getName().compareToIgnoreCase(b2.getName());
-	    }
-	};
-	adapter.sort(comparator);
-	setListAdapter(adapter);
     }
 }

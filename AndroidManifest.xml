@@ -11,6 +11,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MacListView"
+                  android:label="@string/builders_name_mac"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".ChromiumListView"
+                  android:label="@string/builders_name_chromium"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".GTKListView"
+                  android:label="@string/builders_name_gtk"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".QtListView"
+                  android:label="@string/builders_name_qt"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".EFLListView"
+                  android:label="@string/builders_name_efl"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".WindowsListView"
+                  android:label="@string/builders_name_windows"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".AllBotsListView"
+                  android:label="@string/builders_name_all"
+                  android:screenOrientation="portrait">
+        </activity>
     </application>
 <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>

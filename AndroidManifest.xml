@@ -11,8 +11,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MacListView"
-                  android:label="@string/builders_name_mac"
+        <activity android:name=".AppleMacListView"
+                  android:label="@string/builders_name_apple_mac"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".AppleWindowsListView"
+                  android:label="@string/builders_name_apple_windows"
                   android:screenOrientation="portrait">
         </activity>
         <activity android:name=".ChromiumListView"
@@ -31,8 +35,8 @@
                   android:label="@string/builders_name_efl"
                   android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".WindowsListView"
-                  android:label="@string/builders_name_windows"
+        <activity android:name=".MiscellaneousListView"
+                  android:label="@string/builders_name_misc"
                   android:screenOrientation="portrait">
         </activity>
         <activity android:name=".AllBotsListView"

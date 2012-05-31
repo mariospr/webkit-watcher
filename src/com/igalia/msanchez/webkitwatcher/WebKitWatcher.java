@@ -50,8 +50,10 @@ public class WebKitWatcher extends ListActivity {
 	
 	// Yeah, this is hackish.
 	Intent intent = null;
-	if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_mac)))
-	    intent = new Intent(WebKitWatcher.this, MacListView.class);
+	if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_apple_mac)))
+	    intent = new Intent(WebKitWatcher.this, AppleMacListView.class);
+	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_apple_windows)))
+	    intent = new Intent(WebKitWatcher.this, AppleWindowsListView.class);
 	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_chromium)))
 	    intent = new Intent(WebKitWatcher.this, ChromiumListView.class);
 	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_gtk)))
@@ -60,8 +62,8 @@ public class WebKitWatcher extends ListActivity {
 	    intent = new Intent(WebKitWatcher.this, QtListView.class);
 	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_efl)))
 	    intent = new Intent(WebKitWatcher.this, EFLListView.class);
-	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_windows)))
-	    intent = new Intent(WebKitWatcher.this, WindowsListView.class);
+	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_misc)))
+	    intent = new Intent(WebKitWatcher.this, MiscellaneousListView.class);
 	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_all)))
 	    intent = new Intent(WebKitWatcher.this, AllBotsListView.class);
 	

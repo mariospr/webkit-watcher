@@ -138,13 +138,13 @@ public abstract class BuildBotsListView extends ListActivity {
 			Toast.LENGTH_LONG).show();
 	    }
 	    return true;
-	case R.id.browsecoreconsole:
-	    url = this.buildbot.getURL() + "/console?category=core";
+	case R.id.browseconsole:
+	    url = this.buildbot.getURL() + "/console";
 	    intent.setData(Uri.parse(url));
 	    startActivity(intent);
 	    return true;
-	case R.id.browsecorewaterfall:
-	    url = this.buildbot.getURL() + "/waterfall?category=core";
+	case R.id.browsewaterfall:
+	    url = this.buildbot.getURL() + "/waterfall";
 	    intent.setData(Uri.parse(url));
 	    startActivity(intent);
 	    return true;

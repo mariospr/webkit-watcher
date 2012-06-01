@@ -1,3 +1,9 @@
+0.2.1 (02 Jun 2012)
+
+ * Removed any reference left to core buildbots in the contextual menu.
+ * Reordered options in the contextual menu.
+ * Fix crash in android honeycomb when coming back from the browser.
+
 0.2 (01 Jun 2012)
 
   * Replaced the main view showing only the core bots with the full list

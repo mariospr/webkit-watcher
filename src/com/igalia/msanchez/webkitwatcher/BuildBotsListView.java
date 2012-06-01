@@ -48,18 +48,24 @@ public abstract class BuildBotsListView extends ListActivity {
     private BuildBotsMonitor buildbot;
     private ListView listView;
     private int regexpsListId;
+    private boolean isFirstRun;
 
     public BuildBotsListView(int regexpsListId) {
 	super();
 	this.buildbot = null;
 	this.listView = null;
 	this.regexpsListId = regexpsListId;
+	this.isFirstRun = true;
     }
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
+
+	// Early return if we already did this before.
+	if (!this.isFirstRun)
+	    return;
 
 	this.buildbot = new BuildBotsMonitor(this, this.getResources().getStringArray(this.regexpsListId));
 	this.listView = getListView();
@@ -78,6 +84,7 @@ public abstract class BuildBotsListView extends ListActivity {
 	});
 	registerForContextMenu(this.listView);
 	this.buildbot.refreshState();
+	this.isFirstRun = false;
     }
 
     @Override

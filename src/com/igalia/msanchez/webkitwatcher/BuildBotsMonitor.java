@@ -121,7 +121,7 @@ public class BuildBotsMonitor implements Runnable {
     private Handler handler = new Handler() {
 	@Override
 	public void handleMessage(Message msg) {
-	    if (progressDialog.isShowing())
+	    if (progressDialog != null && progressDialog.isShowing())
 		progressDialog.dismiss();
 
 	    listView.updateView();

@@ -1,7 +1,7 @@
 /*
  * BuilderAdapter.java
  *
- * Copyright (C) 2010 Mario Sanchez Prada
+ * Copyright (C) 2010-2012 Mario Sanchez Prada
  * Authors: Mario Sanchez Prada <msanchez@igalia.com>
  *
  * This program is free software; you can redistribute it and/or

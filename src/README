@@ -1,9 +1,9 @@
 WebKit Watcher: an Android application to monitor WebKit buildbots
 ------------------------------------------------------------------
 
-Get the source from git repository at gitorious:
+Get the source from git repository at github:
 
-    git clone git://gitorious.org/webkit-watcher/mainline.git
+    git clone https://github.com/mariospr/webkit-watcher.git
 
 WebKit Watcher is primarily developed with Android 2.2 (Froyo) and a
 HTC Nexus One in mind, but should work fine in any other Android based
@@ -27,4 +27,4 @@ See the COPYING file for more details.
 
 -------------------------------------------
 
-Source: http://gitorious.org/webkit-watcher
+Source: https://github.com/mariospr/webkit-watcher

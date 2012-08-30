@@ -1,8 +1,8 @@
 /*
- * QtListView.java
+ * AllBotsListView.java
  *
  * Copyright (C) 2010-2012 Mario Sanchez Prada
- * Authors: Mario Sanchez Prada <msanchez@igalia.com>
+ * Authors: Mario Sanchez Prada <mario@mariospr.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -20,11 +20,11 @@
  *
  */
 
-package com.igalia.msanchez.webkitwatcher;
+package org.mariospr.webkitwatcher;
 
-public class QtListView extends BuildBotsListView {
+public class AllBotsListView extends BuildBotsListView {
 
-    public QtListView() {
-	super(R.array.qt_buildbots_regexps);
+    public AllBotsListView() {
+	super(R.array.all_buildbots_regexps);
     }
 }

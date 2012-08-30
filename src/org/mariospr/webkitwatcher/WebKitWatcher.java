@@ -2,7 +2,7 @@
  * WebKitWatcher.java
  *
  * Copyright (C) 2010-2012 Mario Sanchez Prada
- * Authors: Mario Sanchez Prada <msanchez@igalia.com>
+ * Authors: Mario Sanchez Prada <mario@mariospr.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -20,7 +20,7 @@
  *
  */
 
-package com.igalia.msanchez.webkitwatcher;
+package org.mariospr.webkitwatcher;
 
 import android.app.ListActivity;
 import android.content.Intent;

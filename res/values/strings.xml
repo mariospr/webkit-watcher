@@ -20,9 +20,7 @@
 
     <string name="builders_name_apple_mac">Apple Mac</string>
     <string name="builders_name_apple_windows">Apple Windows</string>
-    <string name="builders_name_chromium">Chromium</string>
     <string name="builders_name_gtk">GTK+</string>
-    <string name="builders_name_qt">Qt</string>
     <string name="builders_name_efl">EFL</string>
     <string name="builders_name_misc">Miscellaneous</string>
     <string name="builders_name_all">All</string>
@@ -30,9 +28,7 @@
     <string-array name="main_view_options">
         <item>@string/builders_name_apple_mac</item>
         <item>@string/builders_name_apple_windows</item>
-        <item>@string/builders_name_chromium</item>
         <item>@string/builders_name_gtk</item>
-        <item>@string/builders_name_qt</item>
         <item>@string/builders_name_efl</item>
         <!-- item>@string/builders_name_misc</item -->
         <item>@string/builders_name_all</item>
@@ -48,18 +44,10 @@
         <item>Windows.*</item>
     </string-array>
     
-    <string-array name="chromium_buildbots_regexps">
-        <item>.*Chromium.*</item>
-    </string-array>
-        
     <string-array name="gtk_buildbots_regexps">
         <item>.*GTK.*</item>
     </string-array>
         
-    <string-array name="qt_buildbots_regexps">
-        <item>Qt.*</item>
-    </string-array>
-
     <string-array name="efl_buildbots_regexps">
         <item>.*EFL.*</item>
     </string-array>

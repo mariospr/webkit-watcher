@@ -19,16 +19,8 @@
                   android:label="@string/builders_name_apple_windows"
                   android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ChromiumListView"
-                  android:label="@string/builders_name_chromium"
-                  android:screenOrientation="portrait">
-        </activity>
         <activity android:name=".GTKListView"
                   android:label="@string/builders_name_gtk"
-                  android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".QtListView"
-                  android:label="@string/builders_name_qt"
                   android:screenOrientation="portrait">
         </activity>
         <activity android:name=".EFLListView"

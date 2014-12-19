@@ -27,10 +27,6 @@
                   android:label="@string/builders_name_efl"
                   android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".MiscellaneousListView"
-                  android:label="@string/builders_name_misc"
-                  android:screenOrientation="portrait">
-        </activity>
         <activity android:name=".AllBotsListView"
                   android:label="@string/builders_name_all"
                   android:screenOrientation="portrait">

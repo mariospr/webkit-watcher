@@ -52,11 +52,6 @@
         <item>.*EFL.*</item>
     </string-array>
     
-    <string-array name="misc_buildbots_regexps">
-        <item>WinCE.*</item>
-        <item>WinCairo.*</item>
-    </string-array>
-    
     <string-array name="all_buildbots_regexps">
         <item>.*</item>
     </string-array>

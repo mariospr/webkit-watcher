@@ -58,8 +58,6 @@ public class WebKitWatcher extends ListActivity {
 	    intent = new Intent(WebKitWatcher.this, GTKListView.class);
 	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_efl)))
 	    intent = new Intent(WebKitWatcher.this, EFLListView.class);
-	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_misc)))
-	    intent = new Intent(WebKitWatcher.this, MiscellaneousListView.class);
 	else if (name.equalsIgnoreCase(this.getResources().getString(R.string.builders_name_all)))
 	    intent = new Intent(WebKitWatcher.this, AllBotsListView.class);
 	

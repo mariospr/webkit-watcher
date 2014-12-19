@@ -52,7 +52,7 @@ public class BuildBotsMonitor implements Runnable {
 
     public BuildBotsMonitor (BuildBotsListView buildBotListView, String[] regexpsList) {
 	this.listView = buildBotListView;
-	this.url = "http://build.webkit.org";
+	this.url = "https://build.webkit.org";
 	this.builders = null;
 
 	// Initialize the list of supported builders

@@ -35,13 +35,11 @@
     </string-array>
     
     <string-array name="apple_mac_buildbots_regexps">
-        <item>Snow.*Leopard.*</item>
-        <item>Lion.*</item>
-        <item>Mountain.*Lion.*</item>
+        <item>Apple (?!Win).*</item>
     </string-array>
     
     <string-array name="apple_windows_buildbots_regexps">
-        <item>Windows.*</item>
+        <item>Apple.*Win.*</item>
     </string-array>
     
     <string-array name="gtk_buildbots_regexps">

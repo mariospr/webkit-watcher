@@ -96,7 +96,6 @@ public class BuildBotsMonitor implements Runnable {
 	}
     }
 
-    @Override
     public void run() {
 	String htmlContent = null;
 	Message msg = new Message();

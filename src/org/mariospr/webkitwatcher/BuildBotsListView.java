@@ -166,7 +166,6 @@ public abstract class BuildBotsListView extends ListActivity {
 	Collection<Builder> validBuilders = this.buildbot.getBuilders().values();
 	ArrayAdapter<Builder> adapter = new BuilderAdapter(this, R.layout.builder_listitem, validBuilders.toArray(new Builder[0]));
 	Comparator<Builder> comparator = new Comparator<Builder>() {
-	    @Override
 	    public int compare(Builder b1, Builder b2) {
 		return b1.getName().compareToIgnoreCase(b2.getName());
 	    }

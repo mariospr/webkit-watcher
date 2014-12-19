@@ -1,7 +1,7 @@
 /*
  * AppleWindowsListView.java
  *
- * Copyright (C) 2010-2012 Mario Sanchez Prada
+ * Copyright (C) 2010-2014 Mario Sanchez Prada
  * Authors: Mario Sanchez Prada <mario@mariospr.org>
  *
  * This program is free software; you can redistribute it and/or

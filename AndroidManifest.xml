@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.mariospr.webkitwatcher" android:versionCode="7" android:versionName="0.2.2">
 
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="4"></uses-sdk>
+
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:description="@string/app_description" android:persistent="false">
-        <activity android:name=".WebKitWatcher"
+        <activity android:name="org.mariospr.webkitwatcher.WebKitWatcher"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait">
             <intent-filter>
@@ -11,29 +16,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AppleMacListView"
+        <activity android:name="org.mariospr.webkitwatcher.AppleMacListView"
                   android:label="@string/builders_name_apple_mac"
                   android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".AppleWindowsListView"
+        <activity android:name="org.mariospr.webkitwatcher.AppleWindowsListView"
                   android:label="@string/builders_name_apple_windows"
                   android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".GTKListView"
+        <activity android:name="org.mariospr.webkitwatcher.GTKListView"
                   android:label="@string/builders_name_gtk"
                   android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".EFLListView"
+        <activity android:name="org.mariospr.webkitwatcher.EFLListView"
                   android:label="@string/builders_name_efl"
                   android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".AllBotsListView"
+        <activity android:name="org.mariospr.webkitwatcher.AllBotsListView"
                   android:label="@string/builders_name_all"
                   android:screenOrientation="portrait">
         </activity>
     </application>
-<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-
-<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="8"></uses-sdk>
 </manifest>
